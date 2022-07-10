@@ -4,48 +4,102 @@
     <h1>Cree su propia noticia {{ nombre }}</h1>
     <p>No deje campos vacios o llamo a Bugs Bunny</p>
 
-    <form class="formulario">
+    <form class="formulario" (ngSubmit)="handleSubmit()" [formGroup]="postForm">
       <!--input titulo-->
       <div class="formularioGrupo">
-        <label class="formularioLabel" for="title"> Titulo</label>
-        <input class="formularioControl" id="titulo" type="text" />
+        <label class="formularioLabel" for="title">Titulo *</label>
+
+        <input
+          class="formularioControl"
+          id="titulo"
+          type="text"
+          name="title"
+          formControlName="title"
+        />
+
+        <small class="form-error" *ngIf="!getTitle!.valid && getTitle!.touched"
+          >Campo requerido</small
+        >
       </div>
+
       <!--body text-->
       <div class="formularioGrupo">
-        <label class="formularioLabel" for="title"> Cuerpo de Noticia </label>
+        <label class="formularioLabel" for="title">Cuerpo de Noticia * </label>
         <textarea
-          class="formularioControl"
+          class="formularioControl textarea"
           id="bodyText"
           cols="30"
-          rows="10"
+          rows="8"
+          formControlName="bodyText"
         ></textarea>
+
+        <small
+          class="form-error"
+          *ngIf="!getBodyText!.valid && getBodyText!.touched"
+          >Campo requerido</small
+        >
       </div>
       <!--fecha de publicacion.-->
       <div class="formularioGrupo">
-        <label class="formularioLabel" for="date"> Fecha de Publicación</label>
-        <input class="formularioControl" id="date" type="text" />
+        <label class="formularioLabel" for="date">Fecha de Publicación *</label>
+
+        <input
+          class="formularioControl"
+          id="date"
+          type="text"
+          formControlName="date"
+        />
+
+        <small class="form-error" *ngIf="!getDate!.valid && getDate!.touched"
+          >Campo requerido</small
+        >
       </div>
+
+      <p>Seleccione la imagen del post:</p>
+      <div class="btn-group">
+        <button
+          class="img-btn"
+          type="button"
+          *ngFor="let image of defaultImgs"
+          (click)="handleImgSelection(image.alt, image.src)"
+        >
+          <img class="btn--img" [alt]="image.alt" [src]="image.src" />
+        </button>
+      </div>
+
+      <button class="btn submit" type="submit">Crear post</button>
     </form>
   </section>
 
   <!--section posts-->
   <section class="posts">
-    <!-- las directivas estructurales crean y modifican elementos del dom, es como un if dentro del html. en este caso es si post es menor que 3... muestramelo. dentro del ngif se ejecuta un codigo de java script que retorne un boleano. cuando la directiva no se cumple el elemento se eleimina completamente del dom.-->
+    <!-- 
+      las directivas estructurales crean y modifican elementos del dom, es como un if dentro del html. en este caso es si post es menor que 3... muestramelo. dentro del ngif se ejecuta un codigo de java script que retorne un boleano. cuando la directiva no se cumple el elemento se eleimina completamente del dom.
+    -->
 
-    <!-- <article *ngIf="post.length < 3; else errorMsg">
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores,
-      voluptatem architecto? Quas reiciendis ipsum deleniti omnis consequatur
-      laborum maiores. Eos soluta id dolorum assumenda temporibus, consequatur
-      ipsum recusandae eveniet deleniti?
-    </article> -->
+    <!-- 
+      <article *ngIf="post.length < 3; else errorMsg">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores,
+        voluptatem architecto? Quas reiciendis ipsum deleniti omnis consequatur
+        laborum maiores. Eos soluta id dolorum assumenda temporibus, consequatur
+        ipsum recusandae eveniet deleniti?
+      </article> 
+    -->
 
-    <!--El ngfor recorre un arreglo, iterar. repetirlo tantas veces como elementos haya en ese arreglo. entonces tenemos acceso a tantos elementos hay en ese arreglo.
- -->
+    <!--
+      El ngfor recorre un arreglo, iterar. repetirlo tantas veces como elementos haya en ese arreglo. entonces tenemos acceso a tantos elementos hay en ese arreglo.
+     -->
     <article class="post" *ngFor="let post of posts">
-      <h2 class="postHeading">{{ post.title }}</h2>
-      <small class="postDate">{{ post.date }}</small>
-      <p class="bodyText">{{ post.bodyText }}</p>
+      <div>
+        <h2 class="postHeading">{{ post.title }}</h2>
+
+        <small class="postDate">{{ post.date }}</small>
+        <p class="bodyText">{{ post.bodyText }}</p>
+      </div>
+
+      <img class="post__img" [src]="post.imgUrl" alt="{{ post.title }}" />
     </article>
+
     <!-- directivas estructurales porque modifican el html. -->
     <ng-template #errorMsg>
       <p>No hay post disponible en este momento.</p>
